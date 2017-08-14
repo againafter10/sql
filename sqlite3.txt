@@ -1,0 +1,2755 @@
+-bash: sqlite: command not found
+(flasksqlalchemy) [[flask_sqlalchemy]] $sqlite3 chinook.db
+SQLite version 3.19.3 2017-06-08 14:26:16
+Enter ".help" for usage hints.
+sqlite> 
+sqlite> 
+sqlite> create table testanz (cust_id integer ,account_type integer);
+
+sqlite> insert into testanz (cust_id,account_type) values (1,10);
+sqlite> insert into testanz (cust_id,account_type) values (2,10);
+sqlite> insert into testanz (cust_id,account_type) values (3,11);
+sqlite> insert into testanz (cust_id,account_type) values (3,10);
+sqlite> insert into testanz (cust_id,account_type) values (4,8);
+sqlite> insert into testanz (cust_id,account_type) values (5,8);
+sqlite> insert into testanz (cust_id,account_type) values (3,10);
+sqlite> insert into testanz (cust_id,account_type) values (1,11);
+
+sqlite> .header on
+sqlite> .mode column
+sqlite> .schema testanz
+CREATE TABLE testanz (cust_id integer ,account_type integer);
+
+sqlite> select cust_id c ,account_type a from testanz;
+c           a         
+----------  ----------
+1           10        
+2           10        
+3           11        
+3           10        
+4           8         
+5           8         
+3           10        
+1           11    
+
+sqlite> select cust_id,group_concat(account_type) from testanz order by cust_id;
+cust_id     group_concat(account_type)
+----------  --------------------------
+1           10,10,11,10,8,8,10,11  
+
+sqlite> insert into testanz (cust_id,account_type) values (0,11);
+
+sqlite> select cust_id,group_concat(account_type) from testanz order by cust_id;  ====> first cust_id with grouped account types are listed
+
+cust_id     group_concat(account_type)
+----------  --------------------------
+0           10,10,11,10,8,8,10,11,11  
+
+
+sqlite> select cust_id,group_concat(account_type) from testanz group by cust_id; ====> as asked in anz
+cust_id     group_concat(account_type)
+----------  --------------------------
+0           11                        
+1           10,11                     
+2           10                        
+3           11,10,10                  
+4           8                         
+5           8                         
+
+
+======================================================================
+======================================================================
+
+ORACLE default tables
+=======================
+
+
+Tables emp,dept,salgrade
+
+
+sqlite> select create table dept(
+   ...>   deptno number(2,0),
+   ...>   dname  varchar2(14),
+   ...>   loc    varchar2(13),
+   ...>   constraint pk_dept primary key (deptno)
+   ...> );
+
+sqlite> 
+sqlite> create table emp(
+   ...>   empno    number(4,0),
+   ...>   ename    varchar2(10),
+   ...>   job      varchar2(9),
+   ...>   mgr      number(4,0),
+   ...>   hiredate date,
+   ...>   sal      number(7,2),
+   ...>   comm     number(7,2),
+   ...>   deptno   number(2,0),
+   ...>   constraint pk_emp primary key (empno),
+   ...>   constraint fk_deptno foreign key (deptno) references dept (deptno)
+   ...> );
+sqlite> .tables
+albums          dept            genres          media_types     testanz       
+artists         emp             invoice_items   playlist_track  tracks        
+customers       employees       invoices        playlists     
+sqlite> 
+sqlite> 
+
+sqlite> create table bonus(
+   ...>   ename varchar2(10),
+   ...>   job   varchar2(9),
+   ...>   sal   number,
+   ...>   comm  number
+   ...> );
+   
+   
+sqlite> create table salgrade(
+   ...>   grade number,
+   ...>   losal number,
+   ...>   hisal number
+   ...> );
+   
+   
+======================================================================
+======================================================================
+
+
+sqlite> insert into dept values(10, 'ACCOUNTING', 'NEW YORK');
+sqlite> insert into dept values(20, 'RESEARCH', 'DALLAS');
+sqlite> insert into dept values(30, 'SALES', 'CHICAGO');
+sqlite> insert into dept values(40, 'OPERATIONS', 'BOSTON');
+
+
+
+sqlite> insert into salgrade values (1, 700, 1200);
+sqlite> insert into salgrade values (2, 1201, 1400);
+sqlite> insert into salgrade values (3, 1401, 2000);
+sqlite> insert into salgrade values (4, 2001, 3000);
+sqlite> insert into salgrade values (5, 3001, 9999);
+
+
+
+
+insert into emp values(7934, 'MILLER', 'CLERK', 7782,'23-1-1982',1300, null, 10);
+insert into emp values(7839, 'KING', 'PRESIDENT', null,'17-11-1981',5000, null, 10);
+insert into emp values(7698, 'BLAKE', 'MANAGER', 7839,'1-5-1981',2850, null, 30);
+insert into emp values(7782, 'CLARK', 'MANAGER', 7839,'9-6-1981',2450, null, 10);
+insert into emp values(7566, 'JONES', 'MANAGER', 7839,'2-4-1981',2975, null, 20);
+insert into emp values(7900, 'JAMES', 'CLERK', 7698,'3-12-1981',950, null, 30);
+insert into emp values(7876, 'ADAMS', 'CLERK', 7788,'13-JUL-87',1100, null, 20);
+insert into emp values(7788, 'SCOTT', 'ANALYST', 7566,'13-JUL-87',3000, null, 20);
+insert into emp values(7844, 'TURNER', 'SALESMAN', 7698,'8-9-1981',1500, 0, 30);
+insert into emp values(7654, 'MARTIN', 'SALESMAN', 7698,'28-9-1981',1250, 1400, 30);
+insert into emp values(7902, 'FORD', 'ANALYST', 7566,'3-12-1981',3000, null, 20);
+insert into emp values(7369, 'SMITH', 'CLERK', 7902,'17-12-1980',800, null, 20);
+insert into emp values(7499, 'ALLEN', 'SALESMAN', 7698,'20-2-1981',1600, 300, 30);
+insert into emp values(7521, 'WARD', 'SALESMAN', 7698,'22-2-1981',1250, 500, 30);
+
+ 
+ ======================================================================
+ ======================================================================
+ 
+ sqlite> select * from emp;
+empno       ename       job         mgr         hiredate    sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-1-1982   1300                    10        
+7839        KING        PRESIDENT               17-11-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        1-5-1981    2850                    30        
+7876        ADAMS       CLERK       7788        -38         1100                    20        
+7782        CLARK       MANAGER     7839        9-6-1981    2450                    10        
+7566        JONES       MANAGER     7839        2-4-1981    2975                    20        
+7900        JAMES       CLERK       7698        3-12-1981   950                     30        
+7788        SCOTT       ANALYST     7566        13-JUL-87   3000                    20        
+7844        TURNER      SALESMAN    7698        8-9-1981    1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-9-1981   1250        1400        30        
+7902        FORD        ANALYST     7566        3-12-1981   3000                    20        
+7369        SMITH       CLERK       7902        17-12-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-2-1981   1600        300         30        
+7521        WARD        SALESMAN    7698        22-2-1981   1250        500         30        
+
+
+sqlite> select * from dept;
+deptno      dname       loc       
+----------  ----------  ----------
+10          ACCOUNTING  NEW YORK  
+20          RESEARCH    DALLAS    
+30          SALES       CHICAGO   
+40          OPERATIONS  BOSTON    
+
+
+sqlite> select * from salgrade;
+grade       losal       hisal     
+----------  ----------  ----------
+1           700         1200      
+2           1201        1400      
+3           1401        2000      
+4           2001        3000      
+5           3001        9999      
+sqlite> 
+
+
+
+======================================================================
+======================================================================
+
+
+1) all employess from emp table
+
+ sqlite> select * from emp;
+empno       ename       job         mgr         hiredate    sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-1-1982   1300                    10        
+7839        KING        PRESIDENT               17-11-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        1-5-1981    2850                    30        
+7876        ADAMS       CLERK       7788        -38         1100                    20        
+7782        CLARK       MANAGER     7839        9-6-1981    2450                    10        
+7566        JONES       MANAGER     7839        2-4-1981    2975                    20        
+7900        JAMES       CLERK       7698        3-12-1981   950                     30        
+7788        SCOTT       ANALYST     7566        13-JUL-87   3000                    20        
+7844        TURNER      SALESMAN    7698        8-9-1981    1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-9-1981   1250        1400        30        
+7902        FORD        ANALYST     7566        3-12-1981   3000                    20        
+7369        SMITH       CLERK       7902        17-12-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-2-1981   1600        300         30        
+7521        WARD        SALESMAN    7698        22-2-1981   1250        500         30        
+
+
+2) unique jobs from emp table;
+
+sqlite> select distinct(job) from emp;
+job       
+----------
+CLERK     
+PRESIDENT 
+MANAGER   
+ANALYST   
+SALESMAN  
+sqlite> 
+
+3) list emp details in ascending order of their salaries; ===> default is ascending
+
+sqlite> select * from emp order by sal;
+empno       ename       job         mgr         hiredate    sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-12-1980  800                     20        
+7900        JAMES       CLERK       7698        3-12-1981   950                     30        
+7876        ADAMS       CLERK       7788        -38         1100                    20        
+7654        MARTIN      SALESMAN    7698        28-9-1981   1250        1400        30        
+7521        WARD        SALESMAN    7698        22-2-1981   1250        500         30        
+7934        MILLER      CLERK       7782        23-1-1982   1300                    10        
+7844        TURNER      SALESMAN    7698        8-9-1981    1500        0           30        
+7499        ALLEN       SALESMAN    7698        20-2-1981   1600        300         30        
+7782        CLARK       MANAGER     7839        9-6-1981    2450                    10        
+7698        BLAKE       MANAGER     7839        1-5-1981    2850                    30        
+7566        JONES       MANAGER     7839        2-4-1981    2975                    20        
+7788        SCOTT       ANALYST     7566        13-JUL-87   3000                    20        
+7902        FORD        ANALYST     7566        3-12-1981   3000                    20        
+7839        KING        PRESIDENT               17-11-1981  5000                    10        
+sqlite> 
+
+
+
+4) list details of emp in descending order of their salaries;
+
+
+sqlite> select * from emp order by sal desc;
+empno       ename       job         mgr         hiredate    sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-11-1981  5000                    10        
+7788        SCOTT       ANALYST     7566        13-JUL-87   3000                    20        
+7902        FORD        ANALYST     7566        3-12-1981   3000                    20        
+7566        JONES       MANAGER     7839        2-4-1981    2975                    20        
+7698        BLAKE       MANAGER     7839        1-5-1981    2850                    30        
+7782        CLARK       MANAGER     7839        9-6-1981    2450                    10        
+7499        ALLEN       SALESMAN    7698        20-2-1981   1600        300         30        
+7844        TURNER      SALESMAN    7698        8-9-1981    1500        0           30        
+7934        MILLER      CLERK       7782        23-1-1982   1300                    10        
+7654        MARTIN      SALESMAN    7698        28-9-1981   1250        1400        30        
+7521        WARD        SALESMAN    7698        22-2-1981   1250        500         30        
+7876        ADAMS       CLERK       7788        -38         1100                    20        
+7900        JAMES       CLERK       7698        3-12-1981   950                     30        
+7369        SMITH       CLERK       7902        17-12-1980  800                     20        
+sqlite> 
+
+
+
+5) list details of emp in asc of deptno and desc of jobs;
+
+sqlite> select * from emp order by deptno ,job desc;
+empno       ename       job         mgr         hiredate    sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-11-1981  5000                    10        
+7782        CLARK       MANAGER     7839        9-6-1981    2450                    10        
+7934        MILLER      CLERK       7782        23-1-1982   1300                    10        
+7566        JONES       MANAGER     7839        2-4-1981    2975                    20        
+7876        ADAMS       CLERK       7788        -38         1100                    20        
+7369        SMITH       CLERK       7902        17-12-1980  800                     20        
+7788        SCOTT       ANALYST     7566        13-JUL-87   3000                    20        
+7902        FORD        ANALYST     7566        3-12-1981   3000                    20        
+7844        TURNER      SALESMAN    7698        8-9-1981    1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-9-1981   1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-2-1981   1600        300         30        
+7521        WARD        SALESMAN    7698        22-2-1981   1250        500         30        
+7698        BLAKE       MANAGER     7839        1-5-1981    2850                    30        
+7900        JAMES       CLERK       7698        3-12-1981   950                     30        
+sqlite> 
+
+
+
+6) display all unique job groups in desc order;
+
+sqlite> select distinct job from emp  order by job desc;
+job       
+----------
+SALESMAN  
+PRESIDENT 
+MANAGER   
+CLERK     
+ANALYST   
+sqlite> 
+
+
+7) display details of emp where job='MANAGER'
+
+sqlite> select * from emp where job='MANAGER';
+empno       ename       job         mgr         hiredate    sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        1-5-1981    2850                    30        
+7782        CLARK       MANAGER     7839        9-6-1981    2450                    10        
+7566        JONES       MANAGER     7839        2-4-1981    2975                    20        
+sqlite> 
+
+
+8)list employees who joined before 1981   -----doesn't work properly in sqlite but this is the way
+
+sqlite> select * from emp where hiredate < '01-01-1981';
+
+
+
+9) list employees in order of annual salary
+
+sqlite> select ename,sal/30 as "daily sal",sal*12 "annual salary" from emp order by sal *12;
+ename       daily sal   annual salary
+----------  ----------  -------------
+SMITH       26          9600         
+JAMES       31          11400        
+ADAMS       36          13200        
+MARTIN      41          15000        
+WARD        41          15000        
+MILLER      43          15600        
+TURNER      50          18000        
+ALLEN       53          19200        
+CLARK       81          29400        
+BLAKE       95          34200        
+JONES       99          35700        
+SCOTT       100         36000        
+FORD        100         36000        
+KING        166         60000        
+sqlite> 
+
+
+
+10) display exp  of all people with job managers
+
+select empno,ename,months_between(sysdate,hiredate)/12 from emp where job='MANAGER';
+
+
+11)list details for all employees working for manager 7698;
+
+sqlite> select * from emp where mgr=7698;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+
+12) list employess from emp whose commision is more than their salary
+
+
+sqlite> select * from emp where comm > sal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+sqlite> 
+
+
+13) list all employees in order of their designations
+
+sqlite> select * from emp order by job;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+14) list all employees whose daily salary is > 100
+
+sqlite> select * from emp where sal/30 > 100;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+sqlite> select * from emp where sal/30 > 100;
+
+
+
+15) list employees who are either analyst or clerk in descening order;
+
+sqlite> select * from emp where job in ('ANALYST','CLERK');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+
+
+16) list all employees who joined on 03-Dec-1981,22-Feb-1981,01-May-1981 in order of seniority
+sqlite> select * from emp where hiredate in ('03-Dec-1981','22-Feb-1981','01-May-1981') order by hiredate;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+17) list all employees working for deptno 10 0r 20;
+
+sqlite> select * from emp where deptno in (10,20);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+
+18) select all employees who joined in year 1981
+
+sqlite> select * from emp where hiredate like '%1981';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+
+19) list all employee who joined in the month of Sep 1981;
+
+sqlite> select * from emp where hiredate like '%Sep-1981';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+sqlite> 
+
+
+
+20) list all employees whose salary is in the range 1000 to 1800;
+
+sqlite> select * from emp where sal >= 1000 and sal<=1800;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+sqlite> select * from emp where sal between 1000 and 1800;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+21) select all employees who have 5 characters in their names;
+
+sqlite> select * from emp where ename like '_____';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+sqlite> 
+
+
+
+22)list all employees whose name starts with s and is five characters;
+
+sqlite> select * from emp where ename like 'S____';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+
+23)list all employees whose name is 5 characters and has A as 3rd characters;
+
+sqlite> select * from emp where ename like '__A__';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+sqlite> 
+
+
+24)List all employees who joined in January;
+
+sqlite> select * from emp where hiredate like '%Jan%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+sqlite> 
+
+
+25) list all employees who joined in the month whose second charactes in 'a';
+
+sqlite> select * from emp where hiredate like '%-_a_-%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+sqlite> 
+
+
+
+26)list all employees whose salary is 4 didgits and end with 0;
+
+sqlite> select * from emp where sal like '___0';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+27) list all employees who do not work for dept 20;
+
+sqlite> select * from emp where deptno <> 20;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+28) list all employees except president and manager in ascending order of salary;
+
+sqlite> select * from emp where job not in ('PRESIDENT','MANAGER') order by sal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+29) list employees who joined before or after 1981;
+
+sqlite> select * from emp where hiredate not like '%1981';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20       
+
+
+30) list all employees whose empno does not start with 78;
+
+sqlite> select * from emp where empno not like '78%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite
+
+
+31) list all employees working under 'MANAGER'
+
+sqlite> select * from emp where mgr in (select empno from emp where job='MANAGER');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+32) list employee who joined in any year but not in the month of Sep
+
+sqlite> select * from emp where hiredate not like '%Sep%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+33) list all clerks of dept 20;
+
+sqlite> select * from emp where job='CLERK' and deptno=20;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite>
+
+
+34) list employees who joined in year 1981 and are in dept 10 or 30;
+
+sqlite> select * from emp where deptno in (10,30) and hiredate like '%1981';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+35) select details of SMITH
+
+sqlite> select * from emp where ename = 'SMITH';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+36) select location and other details of SMITH (need to get data from emp and dept)
+
+
+sqlite> select a.loc , b.* from dept a , emp b where b.deptno = a.deptno and b.ename='SMITH'; 
+loc         empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+DALLAS      7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+37) list details of all employees working for dept 'ACCOUNTING' and 'RESEARCH';
+
+sqlite> select a.* , b.* from dept a , emp b where b.deptno = a.deptno and a.dname in ('ACCOUNTING','RESEARCH') ;
+deptno      dname       loc         empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+10          ACCOUNTING  NEW YORK    7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+10          ACCOUNTING  NEW YORK    7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+20          RESEARCH    DALLAS      7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+10          ACCOUNTING  NEW YORK    7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+20          RESEARCH    DALLAS      7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+20          RESEARCH    DALLAS      7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+20          RESEARCH    DALLAS      7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+20          RESEARCH    DALLAS      7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+38) list all employees who are 'managers' or 'analyst' working in 'newyork' and 'dallas';
+
+sqlite> select a.* , b.* from dept a , emp b where b.deptno = a.deptno and b.job in ('MANAGER' ,'ANALYST') and a.loc in ('NEWYORK','DALLAS') ;
+deptno      dname       loc         empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+20          RESEARCH    DALLAS      7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+20          RESEARCH    DALLAS      7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+20          RESEARCH    DALLAS      7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+39) List details of all emps working at CHICAGO or working for ACCOUNTING dept wit ann sal >28000, but the sal should not be = 3000 or 2800 who doesn’t belongs to the Mgr and whose empno is having a digit ‘7’ or ‘8’ in 3rd position in the asc order of deptno and desc order of job
+
+sqlite> select a.* ,b.* from emp a,dept b where a.deptno = b.deptno and  b.dname = 'ACCOUNTING' or b.loc = 'CHICAGO' and a.sal * 12 > 28000 and a.sal * 12 not in (3000,2800) and a.mgr is NULL and empno in('__7%','__8%')  order by a.deptno , a.job desc ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          10          ACCOUNTING  NEW YORK  
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          10          ACCOUNTING  NEW YORK  
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          10          ACCOUNTING  NEW YORK  
+
+
+
+40) list all details of employees in order of grades;  (emp and slagrade have no key in common)
+
+sqlite> Select emp.*, grade from emp,salgrade where sal between losal and hisal ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          2         
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          5         
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          4         
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          1         
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          4         
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          4         
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          1         
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          4         
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          3         
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30          2         
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          4         
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20          1         
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          3         
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30          2         
+sqlite> 
+
+
+sqlite> Select count(1) from emp,salgrade where sal between losal and hisal ;
+count(1)  
+----------
+14        
+sqlite> Select count(1) from emp ;
+count(1)  
+----------
+14        
+sqlite> 
+
+
+
+41) list all grade 2 and grade 3 employees;  ---- use sal between losal and hisal to remove duplicate vaues
+
+sqlite> Select emp.*,salgrade.* from emp,salgrade where grade in (2,3) and sal between losal and hisal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade       losal       hisal     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20          3           1401        2000      
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          3           1401        2000      
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30          3           1401        2000      
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          3           1401        2000      
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30          3           1401        2000      
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          3           1401        2000      
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          3           1401        2000      
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          3           1401        2000      
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          3           1401        2000      
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          3           1401        2000      
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          3           1401        2000      
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          3           1401        2000      
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          3           1401        2000      
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          3           1401        2000      
+sqlite> 
+
+
+
+42) list all employees who are either ANALYST or MANAGER and in grades 4 or 5
+
+
+sqlite> select emp.* ,salgrade.* from emp,salgrade where emp.job in ('ANALYST','MANAGER') and salgrade.grade in (4,5) and sal between losal and hisal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade       losal       hisal     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          4           2001        3000      
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          4           2001        3000      
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          4           2001        3000      
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          4           2001        3000      
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          4           2001        3000      
+sqlite> 
+
+
+
+43) list all locations ,grades and details of all employees in dept 10 or 20;
+
+sqlite> select emp.*,salgrade.*,dept.* from emp,salgrade,dept where dept.deptno in (10,20) and emp.deptno=dept.deptno and sal between losal and hisal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade       losal       hisal       deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          2           1201        1400        10          ACCOUNTING  NEW YORK  
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          4           2001        3000        10          ACCOUNTING  NEW YORK  
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          5           3001        9999        10          ACCOUNTING  NEW YORK  
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20          1           700         1200        20          RESEARCH    DALLAS    
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          1           700         1200        20          RESEARCH    DALLAS    
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          4           2001        3000        20          RESEARCH    DALLAS    
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          4           2001        3000        20          RESEARCH    DALLAS    
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          4           2001        3000        20          RESEARCH    DALLAS    
+sqlite> 
+
+
+44) List the details of the emps whose salaries more than the employee 'BLAKE'
+
+
+sqlite> select * from emp where sal > (select sal from emp where ename = 'BLAKE');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+OR
+----
+
+
+sqlite> select A.* from emp A, emp B where A.sal > B.sal and B.ename = 'BLAKE';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+
+
+45) List details of employees whose job is same as 'ALLEN'
+
+sqlite> select * from emp where job = (select job from emp where ename = 'ALLEN') and ename <> 'ALLEN';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+46) list employees who are senior to KING;
+
+sqlite> select * from emp where hiredate > (select hiredate from emp where ename='KING');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30     
+
+
+47) List the emps who are senior to their own MGR's
+
+sqlite> select * from emp a where hiredate < (select hiredate from emp B where b.empno = a.mgr);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+
+
+
+48) List the emps of deptno 20 whose jobs are same as deptno 10
+
+sqlite> select * from emp a where deptno=20 and job in (select job from emp b where deptno=10); 
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+49) List the emps whose Sal is same as FORD or SMITH in desc order of Sal.
+
+
+sqlite> select * from emp where sal in (select sal from emp where ename in ('FORD' ,'SMITH') ) and ename not in ('FORD','SMITH') order by sal Desc;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+sqlite> 
+
+
+
+50) List the emps whose Jobs are same as MILLER or Sal is more than ALLEN
+
+sqlite> select * from emp where ename = 'MILLER' or sal > (select sal from emp where ename = 'ALLEN');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite>
+
+
+51) List the emps whose Sal is > the total remuneration of the SALESMAN.
+
+
+select * from emp where sal > ( select sum(sal) from emp) and job = 'SALESMAN';
+
+
+52) List the emps who are Senior to ‘BLAKE’ working at CHICAGO & BOSTON.
+
+sqlite> select emp.*,dept.* from emp,dept where dept.loc in ('CHICAGO','BOSTON') and hiredate < (select hiredate from emp where ename='BLAKE');
+empno       ename       job         mgr         hiredate     sal         comm        deptno      deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          30          SALES       CHICAGO   
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          40          OPERATIONS  BOSTON    
+sqlite> 
+
+
+
+53) List the emps of Grade 3,4 who belongs to the dept ACCOUNTING or RESEARCH & whose sal is more than ALLEN and exp more than SMITH in the asc order of Exp
+
+sqlite> select salgrade.*,dept.*,emp.*  from emp,dept,salgrade where grade in (3,4) and dept.dname in ('ACCOUNTING','RESEARCH') and emp.sal > (select sal from emp where ename='ALLEN') and emp.hiredate  < (select hiredate from emp where ename='SMITH') and emp.deptno = dept.deptno and emp.sal between losal and hisal order by emp.hiredate;
+grade       losal       hisal       deptno      dname       loc         empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+4           2001        3000        20          RESEARCH    DALLAS      7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+4           2001        3000        20          RESEARCH    DALLAS      7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+4           2001        3000        10          ACCOUNTING  NEW YORK    7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+4           2001        3000        20          RESEARCH    DALLAS      7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+sqlite> 
+sqlite> 
+
+
+
+
+54) List the emps whose jobs same as ALLEN Or SMITH.
+
+sqlite> select * from emp where job in (select job from emp where ename in ('ALLEN' ,'SMITH')) and ename not in ('ALLEN','SMITH');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+55) Write a Query to display the details of emps whose Sal is same as of 
+a)Employee Sal of emp1 table.
+b)¾ Sal of any Mgr of emp2 table.
+c)The Sal of any sales person with exp of 5 yrs belongs to the sales dept of emp3 table.
+d)Any Grade 2 employees of emp4 table.
+e)Any Grade 2&3 employee working for SALES dept or OPERATIONS dept joined in 89
+
+
+Select * from emp where sal in (select sal from emp emp1) 
+OR sal in (select sal*(3/4) from emp emp2 where job='MANAGER') 
+OR sal in (select sal from emp emp3 where months_between(sysdate,hiredate)/12 > 5)
+OR sal in (select sal from emp emp4,salgrade where grade=2 and sal between losal and hisal) 
+OR sal in (select sal from emp,salgrade,dept where grade in (2,3) and dname in ('SALES','OPERATIONS')
+AND hiredate like '%89' AND sal between losal and hisal and emp.deptno=dept.deptno);
+
+
+
+
+56) List the jobs of Deptno 10 those are not found in dept 20
+
+sqlite> select * from emp where deptno=10 and job not in (select distinct job from emp where deptno=20);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+sqlite> 
+
+
+
+57) List the emps of Emp1 who are not found in deptno 20
+
+
+sqlite> select * from emp where ename not in (select ename from emp where deptno=20);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+sqlite>
+
+OR
+
+
+sqlite> select * from emp where deptno <> 20;
+
+
+58) Find the highest Sal of the Emp table.
+
+sqlite> select max(sal) from emp;
+max(sal)  
+----------
+5000      
+
+
+59) Find the details of highest paid employee
+
+
+sqlite> select * from emp where sal = (select max(sal) from emp);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+sqlite> 
+
+
+60) Find the highest paid employee of sales dept.
+
+sqlite> select * from emp where sal = (select max(sal) from emp,dept where emp.deptno=dept.deptno and dname='SALES');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30      
+
+
+61) List the most recently hired emp of grade 3 belongs to the Location CHICAGO
+
+sqlite> select * from emp,dept,salgrade where sal between losal and hisal and emp.deptno=dept.deptno and  salgrade.grade = 3 and dept.loc='CHICAGO';
+empno       ename       job         mgr         hiredate     sal         comm        deptno      deptno      dname       loc         grade       losal       hisal     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          30          SALES       CHICAGO     3           1401        2000      
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          30          SALES       CHICAGO     3           1401        2000      
+sqlite> 
+
+
+62) List the emps who are senior to most recently hired emp who is working under Mgr KING
+
+
+sqlite> select * from emp where hiredate < (select MIN(hiredate) from emp) and mgr = (select empno from emp where ename='KING');
+
+
+63) list all employees working for KING
+
+sqlite> select * from emp where  mgr = (select empno from emp where ename='KING');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+
+
+64) Display the total sal of emps belonging to Grade 3.
+
+sqlite> select sum(sal) from emp,salgrade where salgrade.grade=3 and sal between hisal and losal;
+sum(sal)  
+----------
+          
+
+
+65) Display the avg salaries of all CLERKS
+
+sqlite> select avg(sal) from emp where job='CLERK';
+avg(sal)  
+----------
+1037.5    
+sqlite> 
+
+
+
+66) List the emps in dept 20 whose sal is > the avg sal of deptno 10 emps
+
+sqlite> select * from emp where deptno=20 and sal > (select avg(sal) from emp where deptno=10);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+67) Display the number of emps for each job group deptno wise
+
+sqlite> select job,count(empno),deptno from emp group by job,deptno;
+job         count(empno)  deptno    
+----------  ------------  ----------
+ANALYST     2             20        
+CLERK       1             10        
+CLERK       2             20        
+CLERK       1             30        
+MANAGER     1             10        
+MANAGER     1             20        
+MANAGER     1             30        
+PRESIDENT   1             10        
+SALESMAN    4             30        
+sqlite> 
+
+
+
+
+
+68) find top 2 salaries of employees
+
+
+sqlite> select * from emp order by sal Desc  limit 2;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+sqlite> 
+
+
+69) find top salary of each department
+
+sqlite> select * from emp group by deptno  order by sal Desc  limit 2
+   ...> ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+70) List the Mgr no & no. of emps working for those Mgrs in the asc Mgr no
+
+select mgr,count(*) from emp group by mgr order by mgr asc ;
+
+
+71) List the dept details where at least two emps are working
+
+sqlite> select deptno,count(empno) from emp group by deptno having count(empno) >=2;
+deptno      count(empno)
+----------  ------------
+10          3           
+20          5           
+30          6           
+sqlite> 
+
+
+72) Display the grade, number of emps, max sal of each grade.
+
+sqlite> select grade, count(empno),max(sal) from emp,salgrade where sal between losal and hisal group by grade ;
+grade       count(empno)  max(sal)  
+----------  ------------  ----------
+1           3             1100      
+2           3             1300      
+3           2             1600      
+4           5             3000      
+5           1             5000      
+sqlite> 
+
+
+73) Display dname, grade, no of emps where atleast two emps are ‘CLERKS’ ;
+
+sqlite> select dname,grade, count(empno) from emp,dept,salgrade where dept.deptno = emp.deptno and sal between losal and hisal group by dname,grade having count('CLERK') >= 2 ;
+dname       grade       count(empno)
+----------  ----------  ------------
+RESEARCH    1           2           
+RESEARCH    4           3           
+SALES       2           2           
+SALES       3           2           
+sqlite> 
+
+
+
+
+74) List the details of the dept where the max no of emps are working
+
+sqlite> select dname, count(empno) from emp,dept where dept.deptno = emp.deptno group by dname having count(empno) = (select max(count(empno)) from emp group by deptno);
+
+sqlite> 
+
+
+75) Display the emps whose Mgr name is Jones
+
+sqlite> select * from emp where mgr = (select empno from emp where ename='JONES' and job='MANAGER');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+76) List the emps whose salary is more than 3000 after giving 20% increment
+
+sqlite> Select EMP.*,SAL+(SAL*.2) incrsal from emp where SAL+(SAL*.2) >3000 ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      incrsal   
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          6000.0    
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          3420.0    
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          3570.0    
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          3600.0    
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          3600.0    
+sqlite> 
+
+
+ 
+
+77) List the emps with their dept names.
+
+sqlite> select *,dept.dname from emp,dept where emp.deptno=dept.deptno;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      deptno      dname       loc         dname     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          10          ACCOUNTING  NEW YORK    ACCOUNTING
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          10          ACCOUNTING  NEW YORK    ACCOUNTING
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          30          SALES       CHICAGO     SALES     
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          20          RESEARCH    DALLAS      RESEARCH  
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          10          ACCOUNTING  NEW YORK    ACCOUNTING
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          20          RESEARCH    DALLAS      RESEARCH  
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          30          SALES       CHICAGO     SALES     
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          20          RESEARCH    DALLAS      RESEARCH  
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          30          SALES       CHICAGO     SALES     
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30          30          SALES       CHICAGO     SALES     
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          20          RESEARCH    DALLAS      RESEARCH  
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20          20          RESEARCH    DALLAS      RESEARCH  
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          30          SALES       CHICAGO     SALES     
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30          30          SALES       CHICAGO     SALES     
+sqlite> 
+
+
+
+
+78) List the emps who are not working in sales dept
+
+
+qlite> select emp.*,dept.dname from emp,dept where emp.deptno=dept.deptno and dept.dname <> 'SALES';
+empno       ename       job         mgr         hiredate     sal         comm        deptno      dname     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          ACCOUNTING
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          ACCOUNTING
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          RESEARCH  
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          ACCOUNTING
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          RESEARCH  
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          RESEARCH  
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          RESEARCH  
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20          RESEARCH  
+sqlite> 
+
+
+
+79) List all employee names, dept, sal & comm ,for those whose salary is between 2000 and 5000 while loc is CHICAGO
+
+
+sqlite> select emp.ename,dept.dname,emp.sal,emp.comm from emp,dept where emp.deptno=dept.deptno and sal between 2000 and 5000 and dept.loc='CHICAGO';
+ename       dname       sal         comm      
+----------  ----------  ----------  ----------
+BLAKE       SALES       2850                  
+sqlite> 
+
+
+80) List the emps whose salary is greater than his Manager’s salary
+
+
+sqlite> select a.*  from emp a ,emp b where a.mgr=b.empno and a.sal >b.sal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+81) List the grade, employee name for the deptno 10 or deptno 30 but salgrade is not 4 while they joined the company before ’31-DEC-1982’
+
+sqlite> select grade, ename, hiredate from emp,salgrade where deptno in (10,30) and grade <> 4 and hiredate in (select hiredate from emp where hiredate < '31-DEC-1982') and sal between losal and hisal;
+grade       ename       hiredate   
+----------  ----------  -----------
+2           MILLER      23-Jan-1982
+5           KING        17-Nov-1981
+1           JAMES       03-Dec-1981
+3           TURNER      08-Sep-1981
+2           MARTIN      28-Sep-1981
+3           ALLEN       20-Feb-1981
+2           WARD        22-Feb-1981
+sqlite> 
+
+
+
+82) List the name, job, dname, loc for those who are working as 'MANAGER'
+
+sqlite> select a.* ,dname,loc from emp a,dept where a.deptno = dept.deptno and a.job='MANAGER';
+empno       ename       job         mgr         hiredate     sal         comm        deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          SALES       CHICAGO   
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          ACCOUNTING  NEW YORK  
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          RESEARCH    DALLAS    
+sqlite> 
+
+
+
+83) List the emps whose manager name is ‘JONES’ along with JONES name
+
+sqlite> select a.*, b.ename from emp a ,emp b where a.mgr = b.empno and b.ename='JONES';
+empno       ename       job         mgr         hiredate     sal         comm        deptno      ename     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          JONES     
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          JONES     
+sqlite> 
+
+
+
+84) List the name and salary of "FORD" if his salary is equal to hisal of his Grade
+
+
+sqlite> select ename, sal from emp where ename = 'FORD' and sal = (select hisal from emp, salgrade where ename = 'FORD' and sal between losal and hisal);
+ename       sal       
+----------  ----------
+FORD        3000      
+sqlite> 
+
+
+
+85) List the name, job, dname, Manager, salary, Grade dept wise
+
+
+sqlite> Select ename, job, Mgr, sal, dname, grade from emp, dept, salgrade where emp.deptno=dept.deptno and sal between losal and hisal and emp.deptno in (select deptno from emp ); 
+ename       job         mgr         sal         dname       grade     
+----------  ----------  ----------  ----------  ----------  ----------
+MILLER      CLERK       7782        1300        ACCOUNTING  2         
+CLARK       MANAGER     7839        2450        ACCOUNTING  4         
+KING        PRESIDENT               5000        ACCOUNTING  5         
+ADAMS       CLERK       7788        1100        RESEARCH    1         
+SMITH       CLERK       7902        800         RESEARCH    1         
+FORD        ANALYST     7566        3000        RESEARCH    4         
+JONES       MANAGER     7839        2975        RESEARCH    4         
+SCOTT       ANALYST     7566        3000        RESEARCH    4         
+JAMES       CLERK       7698        950         SALES       1         
+MARTIN      SALESMAN    7698        1250        SALES       2         
+WARD        SALESMAN    7698        1250        SALES       2         
+ALLEN       SALESMAN    7698        1600        SALES       3         
+TURNER      SALESMAN    7698        1500        SALES       3         
+BLAKE       MANAGER     7839        2850        SALES       4         
+sqlite> 
+
+
+
+86) List the employee names, job, salary, grade and dname except who are ‘CLERK’ and sort on the basis of highest salary
+
+sqlite> select ename,job,sal,grade,dname from emp,dept,salgrade where job <> 'CLERK' and emp.deptno=dept.deptno and sal between losal and hisal order by sal;
+ename       job         sal         grade       dname     
+----------  ----------  ----------  ----------  ----------
+MARTIN      SALESMAN    1250        2           SALES     
+WARD        SALESMAN    1250        2           SALES     
+TURNER      SALESMAN    1500        3           SALES     
+ALLEN       SALESMAN    1600        3           SALES     
+CLARK       MANAGER     2450        4           ACCOUNTING
+BLAKE       MANAGER     2850        4           SALES     
+JONES       MANAGER     2975        4           RESEARCH  
+SCOTT       ANALYST     3000        4           RESEARCH  
+FORD        ANALYST     3000        4           RESEARCH  
+KING        PRESIDENT   5000        5           ACCOUNTING
+sqlite> 
+sqlite> 
+
+
+
+
+87) List the emps name, job of employees who are without Manager
+
+
+sqlite> select ename ,job from emp where mgr is NULL;
+ename       job       
+----------  ----------
+KING        PRESIDENT 
+sqlite> 
+
+
+88) List the names of emps who are getting the highest salary dept wise
+
+sqlite> select ename,deptno,sal from emp where sal in (select max(sal) from emp group by deptno);
+ename       deptno      sal       
+----------  ----------  ----------
+KING        10          5000      
+BLAKE       30          2850      
+SCOTT       20          3000      
+FORD        20          3000      
+sqlite> 
+sqlite> 
+
+
+
+89) List the emps whose salary is equal to average of maximum and minimum
+
+
+sqlite> select ename ,sal from emp where sal = (select (max(sal)+min(sal))/2 from emp);
+
+
+
+90)  List the no of employees in each dept where the number is more than 3.
+
+
+sqlite> select count(empno) ,deptno from emp group by deptno having count(empno) >3;
+count(empno)  deptno    
+------------  ----------
+5             20        
+6             30        
+sqlite> 
+
+
+
+91) List the names of department and count where atleast three employees are working. 
+
+sqlite> select dname,count(empno) from emp,dept where emp.deptno=dept.deptno group by emp.deptno having count(emp.empno) >=3;
+dname       count(empno)
+----------  ------------
+ACCOUNTING  3           
+RESEARCH    5           
+SALES       6           
+sqlite> 
+
+
+92) List the managers whose salary is more than equal to his emps avg sal
+
+
+sqlite> select distinct(A.ename) from emp A,emp B where A.empno=B.mgr and A.sal >= ( select avg(sal) from emp group by mgr);
+ename     
+----------
+KING    
+
+
+93) List the managers whose salary is less than equal to his emps avg sal
+
+sqlite> select distinct(A.ename) from emp A,emp B where A.empno=B.mgr and A.sal <= ( select avg(sal) from emp group by mgr);
+ename     
+----------
+CLARK     
+KING      
+SCOTT     
+BLAKE     
+JONES     
+FORD      
+sqlite> 
+
+
+94) List the name, sal, comm for those employees whose net pay is > = anyother employee salary of the company.
+
+
+sqlite> select ename,sal,comm ,avg(sal) "average salary" , (sal+comm) "net pay" from emp  where (sal+comm) >= (select avg(sal) from emp);
+ename       sal         comm        average salary  net pay   
+----------  ----------  ----------  --------------  ----------
+MARTIN      1250        1400        1250.0          2650      
+sqlite> 
+
+
+
+
+95) List the emps whose sal < his Manager but more than other Manager
+
+sqlite> select distinct a.* from emp a,emp b,emp c where a.sal < b.sal and a.sal > c.sal and a.mgr = b.empno and a.mgr not in (select empno from emp where empno <> b.empno );
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+sqlite> 
+
+
+96) List the employee names and their annual salary dept wise
+
+
+qlite> select ename ,sal * 12 ,deptno from emp order by deptno; 
+ename       sal * 12    deptno    
+----------  ----------  ----------
+MILLER      15600       10        
+KING        60000       10        
+CLARK       29400       10        
+ADAMS       13200       20        
+JONES       35700       20        
+SCOTT       36000       20        
+FORD        36000       20        
+SMITH       9600        20        
+BLAKE       34200       30        
+JAMES       11400       30        
+TURNER      18000       30        
+MARTIN      15000       30        
+ALLEN       19200       30        
+WARD        15000       30        
+sqlite> 
+
+
+
+97) Find out least 5 earners of the company
+
+sqlite> select ename,deptno,job,sal from emp order by sal limit 5;
+ename       deptno      job         sal       
+----------  ----------  ----------  ----------
+SMITH       20          CLERK       800       
+JAMES       30          CLERK       950       
+ADAMS       20          CLERK       1100      
+MARTIN      30          SALESMAN    1250      
+WARD        30          SALESMAN    1250      
+sqlite> 
+
+
+
+98) Find out the no of emps whose salary is greater than their Manager's salary
+
+sqlite> select count(a.empno) from emp a ,emp b where a.mgr=b.empno and a.sal > b.sal;
+count(a.empno)
+--------------
+2             
+sqlite> 
+
+
+
+99) List the Mgrs who are not working under ‘PRESIDENT’ but are working under other Manager
+
+sqlite> select ename from emp where job = 'MANAGER' and mgr <> (select empno from emp where job='PRESIDENT');
+
+
+OR
+===
+
+sqlite> select a.ename from emp a ,emp b  where a.job = 'MANAGER' and a.empno = b.mgr  and a.mgr <> (select empno from emp where job='PRESIDENT');
+sqlite> 
+
+
+
+
+100) List the records from emp whose deptno is not in dept
+
+
+sqlite> select * from emp where deptno not in (select deptno from dept);
+
+
+
+101) List the name, sal, comm. and net pay if salary more than max salary of any employee
+
+
+sqlite> select ename,sal,comm,(sal + comm) from emp where sal > (select max(sal) from emp);
+
+
+
+102) List those emps whose sal is odd value
+
+sqlite> select * from emp where (sal%2) <> 0;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+
+
+
+103)  List those emps whose sal is even value
+
+
+sqlite> select * from emp where (sal%2) =0;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+104) List those emps whose sal is multiple of 6
+
+sqlite> select * from emp where (sal%6) =  0;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+105) List the emps whose sal contain 3 digits
+
+
+sqlite> select * from emp where length(sal) = 3;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+
+
+
+106) List the emps who joined in the month of ‘DEC';
+
+
+sqlite> select * from emp where hiredate like '%Dec%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+
+
+107) List the emps whose names contains ‘A’
+
+sqlite> select * from emp where ename like "%A%";
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+108) List the emps whose deptno is listed/substring of his salary.
+
+
+sqlite> select ename, sal, deptno from emp where substr(sal,length(sal)-2,2) = deptno;  ==>something like this depending on the sql syntax
+
+
+109) List the emps whose first 2 chars from hiredate = last 2 chars of salary
+
+select ename, sal, hiredate from emp where substr(hiredate,1,2) = substr(sal,length(sal)-1,2) ;
+
+
+110) List the dname whose no of emps is = to no of chars in the dname.
+
+
+select dname, length(dname) Len from dept where deptno =(select emp.deptno from emp, dept where emp.deptno = dept.deptno having Count(empno) in (select length(dname) from dept group by dname) group by emp.deptno) ;
+
+
+
+
+
+111) List the emps those who joined  before 15th of any month
+
+sqlite> select * from emp where hiredate in ( select hiredate from emp where hiredate < (select hiredate from emp where hiredate like '%14%'));
+
+
+
+112) List the emps who are working as manager
+
+qlite> select * from emp where job = 'MANAGER';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+
+
+113) list employees who have employees reporting to them
+
+sqlite> select * from emp where empno in (select mgr from emp) ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+114) List the name of dept where highest no of emps are working
+
+
+sqlite> select count(empno),dname from emp,dept where emp.deptno=dept.deptno  group by deptno having count(empno) = (select max(count(empno)) from emp group by deptno);
+
+
+
+115) list the date on which 2 more employees have joined
+
+sqlite> select hiredate from emp group by hiredate having count(hiredate)>1;
+hiredate   
+-----------
+03-Dec-1981
+
+
+
+
+116) List the emps who joined in the company on the same date
+
+sqlite> select * from emp where hiredate in (select hiredate from emp group by hiredate having count(hiredate) >1);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+117) List the details of the emps whose grade is equal to one tenth of sales deptno
+
+sqlite> select emp.*,grade,deptno/10  from emp,salgrade where grade = deptno/10 and deptno = (select deptno from dept where dname='SALES') and sal between losal and hisal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade       deptno/10 
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          3           3         
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          3           3         
+sqlite> 
+sqlite> 
+
+
+
+118)  List the name of the dept where more than avg. no of emps are working
+
+sqlite> select  deptno from emp group by deptno having count(empno) > (select avg(count(empno)) from emp group by deptno);
+
+
+
+
+119) List the managers name who has max no of emps working under him
+
+sqlite> select ename from emp where empno =(select mgr from emp having count(empno) =(select max(count(empno)) from emp group by mgr) group by mgr);
+
+
+
+120)  Print a list of emp’s listing ‘just salary’ if salary is more than 1500, ‘Ontarget’ if salary is 1500 and ‘Below 1500’ if salary is less than 1500.
+
+
+select ename, sal, decode(sal,(sal>1500), 'just salary',1500,'On target',(sal<1500),'Below 1500',sal) from emp ;
+
+
+121) Count the no of characters  for each employee name
+
+sqlite> select ename,length(ename) from emp;
+ename       length(ename)
+----------  -------------
+MILLER      6            
+KING        4            
+BLAKE       5            
+ADAMS       5            
+CLARK       5            
+JONES       5            
+JAMES       5            
+SCOTT       5            
+TURNER      6            
+MARTIN      6            
+FORD        4            
+SMITH       5            
+ALLEN       5            
+WARD        4            
+sqlite> 
+
+
+
+122)  List those managers who are getting less than his directs.
+
+
+sqlite> select distinct(a.ename),a.sal from emp a,emp b where a.sal < b.sal and a.empno = b.mgr;
+ename       sal       
+----------  ----------
+JONES       2975      
+sqlite> 
+sqlite> 
+
+
+123) Print the details of employees whoe report to BLAKE
+
+sqlite> select a.* from emp a,emp b where a.mgr=b.empno and b.ename='BLAKE'; 
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+124) List the emps whose Mgr name is ‘JONES’ and also with his Manager Name
+
+sqlite> select a.*,b.ename "report to" from emp a,emp b where a.mgr=b.empno and b.ename='JONES'; 
+empno       ename       job         mgr         hiredate     sal         comm        deptno      report to 
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          JONES     
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          JONES     
+sqlite> 
+
+
+125) list TOP 2 salary from employee table
+
+
+sqlite> select sal from emp order by sal desc limit 2;
+sal       
+----------
+5000      
+3000      
+sqlite>
+
+
+126) list lowest 2 salary from employee table
+
+sqlite> select sal from emp order by sal limit 2;
+sal       
+----------
+800       
+950
+
+127) list TOP 3 salary from employee table for sales dept.
+
+
+sqlite> select sal from emp,dept where emp.deptno=dept.deptno and emp.deptno = (select deptno from dept where dname='SALES') order by sal limit  3;
+sal       
+----------
+950       
+1250      
+1250      
+sqlite> 
+
+
+or
+===
+
+
+qlite> select * from emp,dept where emp.deptno=dept.deptno and emp.deptno = (select deptno from dept where dname='SALES') order by sal limit  3;
+empno       ename       job         mgr         hiredate     sal         comm        deptno      deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          30          SALES       CHICAGO   
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30          30          SALES       CHICAGO   
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30          30          SALES       CHICAGO   
+sqlite> 
+
+
+
+128) list op salary for each depratment
+
+
+sqlite> select max(sal) ,deptno from emp group by deptno;
+max(sal)    deptno    
+----------  ----------
+5000        10        
+3000        20        
+2850        30        
+sqlite> 
+
+
+
+129) rank employees as per their comm.
+
+sqlite> select * from emp where comm is not NULL order by comm;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+sqlite> select * from emp where order by comm and comm is not NULL;
+Error: near "order": syntax error
+sqlite> 
+
+
+
+130) Find out how many employees have job as "MANAGER"
+
+sqlite> select count(empno) from emp where job='MANAGER';
+count(empno)
+------------
+3           
+sqlite> 
+
+
+131)Find avg sal and avg total remuneration for each job type.
+
+
+sqlite> select avg(sal),avg(sal+comm) ,job from emp group by job;
+avg(sal)    avg(sal+comm)  job       
+----------  -------------  ----------
+3000.0                     ANALYST   
+1037.5                     CLERK     
+2758.33333                 MANAGER   
+5000.0                     PRESIDENT 
+1400.0      1950.0         SALESMAN  
+sqlite> 
+
+
+
+131) List the emps who are drawing less than 1000. sort the output by salary
+
+sqlite> select * from emp where sal < 1000 order by sal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+sqlite> 
+
+
+
+132) List the employee name, job, annual sal, deptno, dept name, and grade who earn 36000 a year or who are not CLERKS.
+
+sqlite> select ename,job,sal*12,emp.deptno,dname,grade from emp,salgrade,dept where sal = 3600 or job <> 'CLERKS' and emp.deptno=dept.deptno and sal between losal and hisal;
+ename       job         sal*12      deptno      dname       grade     
+----------  ----------  ----------  ----------  ----------  ----------
+MILLER      CLERK       15600       10          ACCOUNTING  2         
+KING        PRESIDENT   60000       10          ACCOUNTING  5         
+BLAKE       MANAGER     34200       30          SALES       4         
+ADAMS       CLERK       13200       20          RESEARCH    1         
+CLARK       MANAGER     29400       10          ACCOUNTING  4         
+JONES       MANAGER     35700       20          RESEARCH    4         
+JAMES       CLERK       11400       30          SALES       1         
+SCOTT       ANALYST     36000       20          RESEARCH    4         
+TURNER      SALESMAN    18000       30          SALES       3         
+MARTIN      SALESMAN    15000       30          SALES       2         
+FORD        ANALYST     36000       20          RESEARCH    4         
+SMITH       CLERK       9600        20          RESEARCH    1         
+ALLEN       SALESMAN    19200       30          SALES       3         
+WARD        SALESMAN    15000       30          SALES       2         
+sqlite> 
+
+
+
+133) Find out the emps who joined in the company before their managers.
+
+sqlite> select distinct a.* from emp a,emp b where a.empno=b.mgr and a.hiredate < b.hiredate;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+134) Find all the emps who earn minimum sal for each job in asc order of sal
+
+sqlite> select * from emp where sal in (select min(sal) from emp group by job);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite>  
+
+
+
+135) Find out all the emps who earn highest sal in each job type. Sort in des order 
+
+sqlite> select * from emp where sal in (select max(sal) from emp group by job ) order by sal desc;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+sqlite> 
+sqlite> 
+
+
+136) Find out the most recently hired emps in each dept order by hiredate
+
+sqlite> select * from emp where hiredate in  (select min(hiredate) from emp group by job) order by hiredate;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+sqlite> 
+
+
+137) List the emp name, sal and deptno for each emp who earns a sal greater than the avg for their dept order by deptno
+
+sqlite> select ename,sal,deptno from emp where sal > ( select avg(sal) from emp group by deptno) order by deptno;
+ename       sal         deptno    
+----------  ----------  ----------
+KING        5000        10        
+JONES       2975        20        
+SCOTT       3000        20        
+FORD        3000        20        
+sqlite> 
+
+
+138) List the deptno where there are no emps
+
+sqlite> select deptno,count(empno) from emp group by deptno having  count(empno) = 0 ; 
+sqlite> 
+
+
+139) 138) List the deptno where there are any number of employees working
+
+sqlite> select deptno,count(empno) from emp group by deptno having  count(empno) >= 0 ; 
+deptno      count(empno)
+----------  ------------
+10          3           
+20          5           
+30          6           
+sqlite> 
+
+
+140) List the no of emps and avg salary for each job
+
+sqlite> select count(empno),avg(sal) from emp group by job;
+count(empno)  avg(sal)  
+------------  ----------
+2             3000.0    
+4             1037.5    
+3             2758.33333
+1             5000.0    
+4             1400.0    
+
+
+
+141)  List the no of emps ,deptno and avg salary within each dept for each job
+
+
+sqlite> select distinct deptno,count(empno),avg(sal),job from emp group by job,deptno;
+deptno      count(empno)  avg(sal)    job       
+----------  ------------  ----------  ----------
+20          2             3000.0      ANALYST   
+10          1             1300.0      CLERK     
+20          2             950.0       CLERK     
+30          1             950.0       CLERK     
+10          1             2450.0      MANAGER   
+20          1             2975.0      MANAGER   
+30          1             2850.0      MANAGER   
+10          1             5000.0      PRESIDENT 
+30          4             1400.0      SALESMAN  
+sqlite> 
+
+
+
+142) Find the avg salary drawn for each job except for ‘PRESIDENT’
+
+
+sqlite> select avg(sal) ,job from emp where job <> 'PRESIDENT'  group by job;
+avg(sal)    job       
+----------  ----------
+3000.0      ANALYST   
+1037.5      CLERK     
+2758.33333  MANAGER   
+1400.0      SALESMAN  
+sqlite> 
+
+
+143) Find the name and job of the emps who earn Max salary or Commission.
+
+
+sqlite> select ename ,job from emp where sal = (select max(sal) from emp) or comm=(select max(comm) from emp);
+ename       job       
+----------  ----------
+KING        PRESIDENT 
+MARTIN      SALESMAN
+
+
+144) List the name, job and salary of the emps do not belonging to dept 10 but who have the same job and salary as the emps of dept 10
+
+
+sqlite> select ename,job,sal from emp where deptno <> 10 and job in (select job from emp where deptno =10) and sal in (select sal from emp where deptno=10);
+sqlite> 
+
+
+
+145) List the name, job and salary of the emps do not belonging to dept 10 but who have the same job or  salary as the emps of dept 10
+
+sqlite> select ename,job,sal from emp where deptno <> 10 and job in (select job from emp where deptno =10) or sal in (select sal from emp where deptno=10);
+ename       job         sal       
+----------  ----------  ----------
+MILLER      CLERK       1300      
+KING        PRESIDENT   5000      
+BLAKE       MANAGER     2850      
+ADAMS       CLERK       1100      
+CLARK       MANAGER     2450      
+JONES       MANAGER     2975      
+JAMES       CLERK       950       
+SMITH       CLERK       800       
+sqlite> 
+
+
+
+146) List the second highest salary in emp table
+
+sqlite> select min(sal) from (select sal from emp order by sal desc  limit 2);
+ename     
+----------
+3000 
+
+
+147) List the fifth highest salary in emp table
+
+sqlite> select min(sal) from (select sal from emp order by sal desc limit 5);
+min(sal)  
+----------
+2850      
+sqlite>
+
+
+or
+===
+
+
+
+148) List the deptno, name, job, salary and sal+comm. Of the emps who earn the second highest earnings (sal+comm)
+
+
+sqlite> select deptno,ename,job ,sal,min(sal+comm) from (select * from emp order by sal+comm limit 2);
+deptno      ename       job         sal         min(sal+comm)
+----------  ----------  ----------  ----------  -------------
+10          KING        PRESIDENT   5000                     
+sqlite> 
+sqlite> 
+
+
+
+149) List out the name, job, sal of the emps in the department with the highest avg sal.
+
+select ename, job, sal from emp where sal >=(select max(avg(sal)) from emp group by deptno) 
+
+
+150)  List the details of all emps in the asc order of salary.
+
+sqlite> select * from emp order by sal asc;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+sqlite> 
+
+
+151)  List the dept in asc order of job and the desc order of emps print empno, ename
+
+sqlite> select * from emp order by job asc,empno desc ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+sqlite> 
+
+
+
+152) list all clerks
+
+sqlite> select * from emp where job='CLERK';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+
+
+153) List empno, ename, sal, deptno of dept 10 employees in the asc order of sal
+
+sqlite> Select empno, ename,sal, deptno from emp where deptno = 10 order by sal ;
+empno       ename       sal         deptno    
+----------  ----------  ----------  ----------
+7934        MILLER      1300        10        
+7782        CLARK       2450        10        
+7839        KING        5000        10        
+sqlite> 
+
+
+156) List the emps whose salaries are less than 3500
+
+sqlite> select * from emp where sal <3500;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+157) List the emps whose ann sal is < 25000 in the asc order of salaries
+
+
+sqlite> select * from emp where sal*12 < 25000 order by sal;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+sqlite> 
+
+
+
+
+158) List the empno, ename, ann sal, daily sal of all salesman in the asc order of annaul salary
+
+
+sqlite> select empno,ename,sal*12 "annual salary", sal/30 "daily salary" from emp where job = 'SALESMAN' order by sal*12;
+empno       ename       annual salary  daily salary
+----------  ----------  -------------  ------------
+7654        MARTIN      15000          41          
+7521        WARD        15000          41          
+7844        TURNER      18000          50          
+7499        ALLEN       19200          53          
+sqlite> 
+
+
+
+
+159) List the emps who are either CLERKs or MANAGERs
+
+qlite> select * from emp where job in ('CLERK','MANAGER');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+
+
+
+160) List the emps whose annual sal ranging from 23000 to 40000.
+
+sqlite> select * from emp where sal*12  between 23000 and 40000;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+
+161) List the emps working under the mangers with empno's 7369, 7890, 7654, 7900
+
+select * from emp where mgr in (7369,7890,7654,7900);
+
+
+
+162) List the emps names starting with ‘M’ and name length 5 chars
+
+sqlite> select * from emp where ename like 'M____';
+sqlite> 
+
+
+
+163) List the emps names starting with ‘M’ 
+sqlite> select * from emp where ename like 'M%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+sqlite> 
+
+
+
+164) List the emps whose sal is ending with 00
+
+
+sqlite> select * from emp where sal like '%00%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+sqlite> 
+
+
+165) List the emps whose salary is 3 digit no
+
+sqlite> select * from emp where length(sal)=3;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite> 
+
+
+166) List the managers of dept 10 or 20
+
+
+sqlite> select * from emp where job= 'MANAGER' and deptno in (10,20);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+
+
+
+167) List the unique jobs of depts. 20 or 30 in des order
+
+sqlite> select job from emp where deptno in (20,30) group by job order by job desc ;
+job       
+----------
+SALESMAN  
+MANAGER   
+CLERK     
+ANALYST   
+sqlite> 
+
+
+168) List employees  whose manager's empno is starting with 7 but should not have a digit 9 
+
+sqlite> select * from emp where mgr like '7%' and mgr not like '%9%';
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+169) List employees who are working as either manager or analyst with sal ranging from 2000 and 5000 and without comm
+
+sqlite> select * from emp where job in ('MANAGER','ANALYST') and sal between 2000 and 3000 and comm is NULL;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+170) List the details of emps working at CHICAGO
+
+sqlite> select * from emp,dept where emp.deptno=dept.deptno and  loc='CHICAGO';
+empno       ename       job         mgr         hiredate     sal         comm        deptno      deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          30          SALES       CHICAGO   
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          30          SALES       CHICAGO   
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          30          SALES       CHICAGO   
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30          30          SALES       CHICAGO   
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          30          SALES       CHICAGO   
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30          30          SALES       CHICAGO   
+sqlite> 
+
+
+
+171) List the empno, ename,deptno, loc of all emps
+
+sqlite> select empno , ename,emp.deptno,loc  from emp,dept where emp.deptno=dept.deptno ; 
+empno       ename       deptno      loc       
+----------  ----------  ----------  ----------
+7934        MILLER      10          NEW YORK  
+7839        KING        10          NEW YORK  
+7698        BLAKE       30          CHICAGO   
+7876        ADAMS       20          DALLAS    
+7782        CLARK       10          NEW YORK  
+7566        JONES       20          DALLAS    
+7900        JAMES       30          CHICAGO   
+7788        SCOTT       20          DALLAS    
+7844        TURNER      30          CHICAGO   
+7654        MARTIN      30          CHICAGO   
+7902        FORD        20          DALLAS    
+7369        SMITH       20          DALLAS    
+7499        ALLEN       30          CHICAGO   
+7521        WARD        30          CHICAGO   
+sqlite> 
+
+
+
+
+172) List the empno, ename, sal, grade of all emps
+
+sqlite> select empno,ename,sal,grade from emp,salgrade where sal between losal and hisal;
+empno       ename       sal         grade     
+----------  ----------  ----------  ----------
+7934        MILLER      1300        2         
+7839        KING        5000        5         
+7698        BLAKE       2850        4         
+7876        ADAMS       1100        1         
+7782        CLARK       2450        4         
+7566        JONES       2975        4         
+7900        JAMES       950         1         
+7788        SCOTT       3000        4         
+7844        TURNER      1500        3         
+7654        MARTIN      1250        2         
+7902        FORD        3000        4         
+7369        SMITH       800         1         
+7499        ALLEN       1600        3         
+7521        WARD        1250        2         
+sqlite> 
+
+
+173) List the grade 2&3 emp of Chicago
+
+sqlite> select emp.*,grade,loc from emp,dept,salgrade where sal between losal and hisal and emp.deptno=dept.deptno and loc='CHICAGO';
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          1           CHICAGO   
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30          2           CHICAGO   
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30          2           CHICAGO   
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          3           CHICAGO   
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          3           CHICAGO   
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          4           CHICAGO   
+sqlite> 
+
+
+
+174) List the grade 3 emps of research and  operations depts who joined after 1987 and whose names should not be either miller or allen
+
+sqlite>  select emp.*,grade from emp,salgrade where sal between losal and hisal and grade=3 and hiredate > '%1987%' and ename not in ('ALLEN','MILLER');
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          3         
+sqlite> 
+
+
+175) List the emps whose job is same as smith
+
+sqlite> select * from emp where job = (select job from emp where ename='SMITH');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+sqlite>
+
+
+
+176) List the emps who are senior to miller
+
+sqlite> select * from emp where hiredate < (select hiredate from emp where ename='MILLER');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+sqlite> 
+
+
+177) List the emps whose job is same as either allen or sal > allen
+
+sqlite> select * from emp where job = (select job from emp where ename='ALLEN') or sal > (select sal from emp where ename='ALLEN');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30        
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30        
+7521        WARD        SALESMAN    7698        22-Feb-1981  1250        500         30        
+sqlite> 
+
+
+
+178) List the emps who are senior to their own mgr
+
+sqlite> select a.* from emp a,emp b where a.mgr = b.empno and a.hiredate < (select hiredate from emp where empno = b.empno);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+
+
+
+179) List the emps whose sal > blake’s
+
+sqlite> select * from emp where sal > (select sal from emp where ename = 'BLAKE');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+180) List the emps who belongs to dept 10 and sal > allen’s sal
+
+sqlite> select * from emp where deptno=10 and sal > (select sal from emp where ename='ALLEN');
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10        
+sqlite> 
+
+
+
+181) List the managers who are senior to king & who are junior to smith
+
+sqlite> select * from emp where job='MANAGER' and hiredate < (select hiredate from emp where ename='KING') and hiredate > (select hiredate from emp where ename = 'SMITH');
+sqlite> 
+sqlite> 
+sqlite> 
+
+
+182) List the empno, ename, loc, sal, dname,loc of all the emps belong to king’s dept
+
+sqlite> select emp.*,dname,loc from emp,dept where emp.deptno=dept.deptno and emp.deptno=(select deptno from emp where ename = 'KING');
+empno       ename       job         mgr         hiredate     sal         comm        deptno      dname       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------
+7934        MILLER      CLERK       7782        23-Jan-1982  1300                    10          ACCOUNTING  NEW YORK  
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          ACCOUNTING  NEW YORK  
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          ACCOUNTING  NEW YORK  
+sqlite> 
+
+
+
+183) List the emps whose grade are > the grade of miller.
+
+sqlite> select emp.*,grade from emp,salgrade where sal between losal and hisal and grade > (select grade from emp,salgrade where sal between losal and hisal and ename='MILLER');
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade     
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------
+7844        TURNER      SALESMAN    7698        08-Sep-1981  1500        0           30          3         
+7499        ALLEN       SALESMAN    7698        20-Feb-1981  1600        300         30          3         
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30          4         
+7782        CLARK       MANAGER     7839        09-Jun-1981  2450                    10          4         
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20          4         
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20          4         
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20          4         
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10          5         
+sqlite> 
+
+
+
+184) List the emps who are belongs to dallas or Chicago with the grade same as adams
+
+
+sqlite> select emp.*,grade,loc from emp,salgrade,dept where sal between losal and hisal and emp.deptno=dept.deptno and loc in ('DALLAS','CHICAGO') and grade = (select grade from emp,salgrade where sal between losal and hisal and ename = 'ADAMS');
+empno       ename       job         mgr         hiredate     sal         comm        deptno      grade       loc       
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------  ----------  ----------
+7876        ADAMS       CLERK       7788        01-May-1976  1100                    20          1           DALLAS    
+7900        JAMES       CLERK       7698        03-Dec-1981  950                     30          1           CHICAGO   
+7369        SMITH       CLERK       7902        17-Dec-1980  800                     20          1           DALLAS    
+sqlite> 
+
+
+
+185) List the emps whose sal is same as ford or blake
+
+sqlite> select * from emp where sal in (select sal from emp where ename in ('FORD','BLAKE'));
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+
+186) List the highest paid emp
+
+sqlite> select * from emp where sal =(select max(sal) from emp);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+sqlite> 
+
+187) list highest paid employee of each dept.
+
+sqlite> select * from emp where sal in (select max(sal) from emp group by deptno);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7839        KING        PRESIDENT               17-Nov-1981  5000                    10        
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+7788        SCOTT       ANALYST     7566        13-Jul-1987  3000                    20        
+7902        FORD        ANALYST     7566        03-Dec-1981  3000                    20        
+sqlite> 
+
+
+188) List the details of most recently hired emp of dept 30
+
+sqlite> select * from emp where hiredate = (select max(hiredate) from emp where deptno=30);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7654        MARTIN      SALESMAN    7698        28-Sep-1981  1250        1400        30        
+sqlite> 
+
+
+189) List the details of most senior emp of dept 30
+
+sqlite> select * from emp where hiredate = (select min(hiredate) from emp where deptno=30);
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7698        BLAKE       MANAGER     7839        01-May-1981  2850                    30        
+sqlite> 
+sqlite> 
+
+190) List the highest paid emp working under king
+
+
+sqlite> Select * from emp where sal = (select max(sal) from emp where mgr=(select empno from emp where ename='KING')) ;
+empno       ename       job         mgr         hiredate     sal         comm        deptno    
+----------  ----------  ----------  ----------  -----------  ----------  ----------  ----------
+7566        JONES       MANAGER     7839        02-Apr-1981  2975                    20        
+sqlite> 
+sqlite> 
+
+
+
+
+
+
+
