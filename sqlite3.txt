@@ -4,23 +4,23 @@ SQLite version 3.19.3 2017-06-08 14:26:16
 Enter ".help" for usage hints.
 sqlite> 
 sqlite> 
-sqlite> create table testanz (cust_id integer ,account_type integer);
+sqlite> create table anz (cust_id integer ,account_type integer);
 
-sqlite> insert into testanz (cust_id,account_type) values (1,10);
-sqlite> insert into testanz (cust_id,account_type) values (2,10);
-sqlite> insert into testanz (cust_id,account_type) values (3,11);
-sqlite> insert into testanz (cust_id,account_type) values (3,10);
-sqlite> insert into testanz (cust_id,account_type) values (4,8);
-sqlite> insert into testanz (cust_id,account_type) values (5,8);
-sqlite> insert into testanz (cust_id,account_type) values (3,10);
-sqlite> insert into testanz (cust_id,account_type) values (1,11);
+sqlite> insert into anz (cust_id,account_type) values (1,10);
+sqlite> insert into anz (cust_id,account_type) values (2,10);
+sqlite> insert into anz (cust_id,account_type) values (3,11);
+sqlite> insert into anz (cust_id,account_type) values (3,10);
+sqlite> insert into anz (cust_id,account_type) values (4,8);
+sqlite> insert into anz (cust_id,account_type) values (5,8);
+sqlite> insert into anz (cust_id,account_type) values (3,10);
+sqlite> insert into anz (cust_id,account_type) values (1,11);
 
 sqlite> .header on
 sqlite> .mode column
-sqlite> .schema testanz
+sqlite> .schema anz
 CREATE TABLE testanz (cust_id integer ,account_type integer);
 
-sqlite> select cust_id c ,account_type a from testanz;
+sqlite> select cust_id c ,account_type a from anz;
 c           a         
 ----------  ----------
 1           10        
@@ -32,21 +32,21 @@ c           a
 3           10        
 1           11    
 
-sqlite> select cust_id,group_concat(account_type) from testanz order by cust_id;
+sqlite> select cust_id,group_concat(account_type) from anz order by cust_id;
 cust_id     group_concat(account_type)
 ----------  --------------------------
 1           10,10,11,10,8,8,10,11  
 
-sqlite> insert into testanz (cust_id,account_type) values (0,11);
+sqlite> insert into anz (cust_id,account_type) values (0,11);
 
-sqlite> select cust_id,group_concat(account_type) from testanz order by cust_id;  ====> first cust_id with grouped account types are listed
+sqlite> select cust_id,group_concat(account_type) from anz order by cust_id;  ====> first cust_id with grouped account types are listed
 
 cust_id     group_concat(account_type)
 ----------  --------------------------
 0           10,10,11,10,8,8,10,11,11  
 
 
-sqlite> select cust_id,group_concat(account_type) from testanz group by cust_id; ====> as asked in anz
+sqlite> select cust_id,group_concat(account_type) from anz group by cust_id; ====> as expected by them 
 cust_id     group_concat(account_type)
 ----------  --------------------------
 0           11                        
