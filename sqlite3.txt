@@ -1234,13 +1234,12 @@ sqlite>
 
 73) Display dname, grade, no of emps where atleast two emps are ‘CLERKS’ ;
 
-sqlite> select dname,grade, count(empno) from emp,dept,salgrade where dept.deptno = emp.deptno and sal between losal and hisal group by dname,grade having count('CLERK') >= 2 ;
+sqlite> select dept.dname,salgrade.grade,count(empno) from emp,salgrade,dept where emp.deptno = dept.deptno and sal between losal and hisal group by dname having count('CLERK') >=2;
 dname       grade       count(empno)
 ----------  ----------  ------------
-RESEARCH    1           2           
-RESEARCH    4           3           
-SALES       2           2           
-SALES       3           2           
+ACCOUNTING  4           3           
+RESEARCH    1           5           
+SALES       2           6            
 sqlite> 
 
 
