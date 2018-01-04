@@ -2757,7 +2757,7 @@ sqlite>
 ==================
 ==================
 
-CTE:
+Recursive Common Table Expression:
 
 sqlite> with recursive ct(x) as (values(0) union all select x+2 from ct where x < 20) select x from ct;
 x         
@@ -2776,7 +2776,14 @@ x
 sqlite> 
 
 
+Generating a hierarchical list:
+1. we first need to retrieve root employee, i.e. top level employee,
+2. after the root level is retrieved, we need to find all child nodes for that root level,
+3. perform step 2 until all levels are retrieved.
 
+This can be achieved using a Recursive Common Table Expression, which consists of two parts:
+1. Retrieve root level – this is known as Anchor in a Recursive CTE
+2. retrieve all children of root level – this is known as Recursive Part in a Recursive CTE.
 
 
 
