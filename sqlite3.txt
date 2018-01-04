@@ -2754,6 +2754,26 @@ empno       ename       job         mgr         hiredate     sal         comm   
 sqlite> 
 sqlite> 
 
+==================
+==================
+
+CTE:
+
+sqlite> with recursive ct(x) as (values(0) union all select x+2 from ct where x < 20) select x from ct;
+x         
+----------
+0         
+2         
+4         
+6         
+8         
+10        
+12        
+14        
+16        
+18        
+20        
+sqlite> 
 
 
 
