@@ -2786,4 +2786,6 @@ This can be achieved using a Recursive Common Table Expression, which consists o
 2. retrieve all children of root level – this is known as Recursive Part in a Recursive CTE.
 
 
+eg:
+WITH EmployeeHierarchy(empno, ename, job, EmpLevel) AS ( SELECT empno,ename,job, 0 AS EmpLevel FROM emp WHERE mgr IS NULL UNION ALL SELECT emp.empno, emp.ename, emp.job, EmpLevel + 1 FROM emp INNER JOIN EmployeeHierarchy AS EmpH ON emp.empno = EmpH.empno) SELECT empno,ename,job,EmpLevel FROM EmployeeHierarchy ORDER BY empno and EmpLevel < 3;
 
